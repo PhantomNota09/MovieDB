@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MovieListVC.swift
 //  MovieDB
 //
 //  Created by Surya Rayala on 1/26/26.
@@ -7,85 +7,139 @@
 
 import UIKit
 
-class MovieListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+// MARK: - Movie List View Controller
 
+/// Displays a list of movies in a table view with navigation to detail screen
+final class MovieListVC: UIViewController {
+    
+    // MARK: - Constants
+    
+    /// Enum for table view configuration values
+    private enum TableViewConfig {
+        static let rowHeight: CGFloat = 160
+        static let numberOfSections = 1
+    }
+    
+    /// Enum for cell and view controller identifiers
+    private enum Identifiers {
+        static let movieCell = "MovieTableViewCell"
+        static let detailViewController = "MovieDetailViewController"
+    }
+    
+    // MARK: - Outlets
+    
     @IBOutlet weak var movieTableView: UITableView!
-    var movieData: [MovieModel]? = []
-
+    
+    // MARK: - Properties
+    
+    /// Array containing all movie data to display
+    private var movieData: [MovieModel] = []
+    
+    // MARK: - Lifecycle Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
+        loadMovieData()
+        configureNavigationBar()
+    }
+}
 
+// MARK: - Setup Methods
+
+private extension MovieListVC {
+    
+    /// Configures the table view delegate and data source
+    func setupTableView() {
         movieTableView.delegate = self
         movieTableView.dataSource = self
-        
+    }
+    
+    /// Loads movie data from mock data source
+    func loadMovieData() {
         movieData = MockData()
     }
     
+    /// Configures navigation bar appearance
+    func configureNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension MovieListVC: UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return TableViewConfig.numberOfSections
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return movieData.count
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        guard let objMovieTable = movieTableView.dequeueReusableCell(withIdentifier: "MovieTableViewCell") as? MovieTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifiers.movieCell,
+            for: indexPath
+        ) as? MovieTableViewCell else {
             return UITableViewCell()
         }
         
-        let data = movieData?[indexPath.row]
-
-        objMovieTable.movieTitleLabel.text = data?.title ?? ""
-        objMovieTable.movieScoreLabel.text = data?.score ?? ""
-        objMovieTable.movieReleaseLabel.text = data?.year ?? ""
-
-        if let imageName = data?.image {
-            objMovieTable.moviePosterImageView.image = UIImage(systemName: imageName)
-        }
+        let movie = movieData[indexPath.row]
+        configureCell(cell, with: movie)
         
-        return objMovieTable
+        return cell
     }
+}
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movieData?.count ?? 0
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        1
-    }
+// MARK: - UITableViewDelegate
+
+extension MovieListVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        160
+        return TableViewConfig.rowHeight
     }
-        
-    /*
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        if section == 0 {
-            let headerLabel: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 40))
-            headerLabel.text = "Movies"
-            headerLabel.textAlignment = .center;
-            headerLabel.textColor = .black;
-            headerLabel.font = UIFont.systemFont(ofSize: 30, weight: .heavy)
-            
-            return headerLabel
-        }
-
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 50
-        }
-        
-        return 0
-    }
-    */
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let selectedMovie = movieData?[indexPath.row] else { return }
+        let selectedMovie = movieData[indexPath.row]
+        navigateToMovieDetail(with: selectedMovie)
+    }
+}
+
+// MARK: - Cell Configuration
+
+private extension MovieListVC {
+    
+    /// Configures a movie cell with the provided movie data
+    func configureCell(_ cell: MovieTableViewCell, with movie: MovieModel) {
+        cell.movieTitleLabel.text = movie.title ?? ""
+        cell.movieScoreLabel.text = movie.score ?? ""
+        cell.movieReleaseLabel.text = movie.year ?? ""
         
-        guard let detailVC = storyboard?.instantiateViewController(withIdentifier: "MovieDetailViewController") as? MovieDetailViewController else { return }
+        // Set poster image if available
+        if let imageName = movie.image {
+            cell.moviePosterImageView.image = UIImage(systemName: imageName)
+        }
+    }
+}
+
+// MARK: - Navigation
+
+private extension MovieListVC {
+    
+    /// Navigates to the movie detail screen with the selected movie
+    func navigateToMovieDetail(with movie: MovieModel) {
+        guard let detailVC = storyboard?.instantiateViewController(
+            withIdentifier: Identifiers.detailViewController
+        ) as? MovieDetailViewController else {
+            return
+        }
         
-        detailVC.movie = selectedMovie
-        
+        detailVC.movie = movie
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
