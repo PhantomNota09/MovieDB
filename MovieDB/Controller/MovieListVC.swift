@@ -14,6 +14,7 @@ final class MovieListVC: UIViewController {
     
     // MARK: - Constants
     var movieTableView: UITableView?
+    var pageLable: UILabel?
     private var movieData: [MovieModel] = []
     
     /// Enum for table view configuration values
@@ -31,6 +32,7 @@ final class MovieListVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpLabel()
         setupTableView()
         loadMovieData()
     }
@@ -40,6 +42,28 @@ final class MovieListVC: UIViewController {
 
 private extension MovieListVC {
     
+    /// Setting up label and add constraints
+    func setUpLabel() {
+        pageLable = UILabel()
+        pageLable?.text = "Movie List"
+        pageLable?.textColor = .black
+        pageLable?.backgroundColor = .white
+        pageLable?.font = UIFont.boldSystemFont(ofSize: 24)
+        pageLable?.numberOfLines = 1
+        pageLable?.textAlignment = .center
+        pageLable?.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let pageLable = pageLable {
+            view.addSubview(pageLable)
+            NSLayoutConstraint.activate([
+                pageLable.topAnchor.constraint(equalTo: view.topAnchor),
+                pageLable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -680),
+                pageLable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                pageLable.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+        }
+    }
+    
     /// Configures the table view delegate and data source
     func setupTableView() {
         movieTableView = UITableView()
@@ -48,16 +72,18 @@ private extension MovieListVC {
         movieTableView?.register(MovieTableViewCell.self, forCellReuseIdentifier: Identifiers.movieTableViewCell)
         movieTableView?.translatesAutoresizingMaskIntoConstraints = false
         
-        if let tableView = movieTableView {
+        if let tableView = movieTableView, let pageLable = pageLable {
             view.addSubview(tableView)
             NSLayoutConstraint.activate([
-                tableView.topAnchor.constraint(equalTo: view.topAnchor),
+                tableView.topAnchor.constraint(equalTo: pageLable.bottomAnchor, constant: -60),
                 tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
             ])
         }
     }
+    
+
     
     /// Loads movie data from mock data source
     func loadMovieData() {
