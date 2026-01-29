@@ -12,34 +12,93 @@ import Foundation
 /// Represents a movie with all its associated information
 struct MovieModel {
     
-    // MARK: - Properties
+    // MARK: - Raw Properties (Clean Data)
     
     /// The title of the movie
-    let title: String?
+    let title: String
     
     /// The popularity score of the movie
-    let score: String?
+    let popularityScore: Double
     
-    /// The release year of the movie
-    let year: String?
+    /// The release year of the movie (short format)
+    let releaseYear: Int
     
     /// The SF Symbol name for the movie poster
-    let image: String?
+    let imageName: String
     
     /// A brief description of the movie plot
-    let description: String?
+    let plotDescription: String
     
-    /// The movie's rating (e.g., "7.9/10")
-    let rating: String?
+    /// The movie's rating (e.g., 7.9)
+    let rating: Double
     
     /// The detailed release date of the movie
-    let detailedYear: String?
+    let releaseDate: String
     
     /// The number of votes the movie has received
-    let voteCount: String?
+    let voteCount: Int
     
     /// The genre identifier for the movie
-    let genreId: String?
+    let genreId: Int
+    
+    // MARK: - Computed Properties (Formatted Display)
+    
+    /// Formatted title for display
+    var displayTitle: String {
+        return "Title: \(title)"
+    }
+    
+    /// Formatted popularity score for display
+    var displayScore: String {
+        return "Popularity Score: \(popularityScore)"
+    }
+    
+    /// Formatted release year for display (short)
+    var displayYear: String {
+        return "Release Year: \(releaseYear)"
+    }
+    
+    /// Formatted rating for display
+    var displayRating: String {
+        return "Rating: \(rating)/10"
+    }
+    
+    /// Formatted release date for display (detailed)
+    var displayReleaseDate: String {
+        return "Release Date: \(releaseDate)"
+    }
+    
+    /// Formatted vote count for display
+    var displayVoteCount: String {
+        return "Vote Count: \(voteCount.formatted())"
+    }
+    
+    /// Formatted genre ID for display
+    var displayGenreId: String {
+        return "Genre ID: \(genreId)"
+    }
+    
+    // MARK: - Static Formatting Functions
+    
+    /// Formats a title with prefix
+    static func formatTitle(_ title: String) -> String {
+        return "Title: \(title)"
+    }
+    
+    /// Formats a popularity score
+    static func formatPopularityScore(_ score: Double) -> String {
+        return "Popularity Score: \(score)"
+    }
+    
+    /// Formats a rating value
+    static func formatRating(_ rating: Double) -> String {
+        return "Rating: \(rating)/10"
+    }
+    
+    /// Formats vote count with thousands separator
+    static func formatVoteCount(_ count: Int) -> String {
+        return "Vote Count: \(count.formatted())"
+    }
 }
 
 // MARK: - Mock Data Generator
@@ -47,87 +106,61 @@ struct MovieModel {
 /// Generates mock movie data for testing and development purposes
 func MockData() -> [MovieModel] {
     return [
-        createAdAstraMovie(),
-        createAvatarMovie(),
-        createLionKingMovie(),
-        createInceptionMovie(),
-        createDarkKnightMovie()
+        MovieModel(
+            title: "Ad Astra",
+            popularityScore: 176.674,
+            releaseYear: 2019,
+            imageName: "star.fill",
+            plotDescription: "The near future, a time when both hope and hardships drive humanity to look to the stars and beyond.",
+            rating: 7.9,
+            releaseDate: "2019-02-08",
+            voteCount: 5000,
+            genreId: 878
+        ),
+        MovieModel(
+            title: "Avatar",
+            popularityScore: 144.444,
+            releaseYear: 2009,
+            imageName: "leaf.fill",
+            plotDescription: "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission.",
+            rating: 8.0,
+            releaseDate: "2009-12-02",
+            voteCount: 20000,
+            genreId: 878
+        ),
+        MovieModel(
+            title: "The Lion King",
+            popularityScore: 123.456,
+            releaseYear: 1994,
+            imageName: "crown.fill",
+            plotDescription: "A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.",
+            rating: 8.8,
+            releaseDate: "1994-02-11",
+            voteCount: 15000,
+            genreId: 16
+        ),
+        MovieModel(
+            title: "Inception",
+            popularityScore: 198.532,
+            releaseYear: 2010,
+            imageName: "brain.head.profile",
+            plotDescription: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+            rating: 8.8,
+            releaseDate: "2010-07-16",
+            voteCount: 32000,
+            genreId: 878
+        ),
+        MovieModel(
+            title: "The Dark Knight",
+            popularityScore: 210.987,
+            releaseYear: 2008,
+            imageName: "moon.stars.fill",
+            plotDescription: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+            rating: 9.0,
+            releaseDate: "2008-07-18",
+            voteCount: 28000,
+            genreId: 28
+        )
     ]
 }
 
-// MARK: - Movie Factory Methods
-
-/// Creates the Ad Astra movie data
-private func createAdAstraMovie() -> MovieModel {
-    return MovieModel(
-        title: "Title: Ad Astra",
-        score: "Popularity Score: 176.674",
-        year: "Release Year: 2019",
-        image: "star.fill",
-        description: "The near future, a time when both hope and hardships drive humanity to look to the stars and beyond.",
-        rating: "Ratings: 7.9/10",
-        detailedYear: "Release Year:  2019-02-08",
-        voteCount: "Vote Count: 5000",
-        genreId: "Genre IDs: 878"
-    )
-}
-
-/// Creates the Avatar movie data
-private func createAvatarMovie() -> MovieModel {
-    return MovieModel(
-        title: "Title: Avatar",
-        score: "Popularity Score: 144.444",
-        year: "Release Year: 2009",
-        image: "leaf.fill",
-        description: "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission.",
-        rating: "Ratings: 8.0/10",
-        detailedYear: "Release Year:  2009-12-02",
-        voteCount: "Vote Count: 20000",
-        genreId: "Genre IDs: 878"
-    )
-}
-
-/// Creates The Lion King movie data
-private func createLionKingMovie() -> MovieModel {
-    return MovieModel(
-        title: "Title: The Lion King",
-        score: "Popularity Score: 123.456",
-        year: "Release Year: 1994",
-        image: "crown.fill",
-        description: "A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.",
-        rating: "Ratings: 8.8/10",
-        detailedYear: "Release Year: 1994-02-11",
-        voteCount: "Vote Count: 15000",
-        genreId: "Genre IDs: 16"
-    )
-}
-
-/// Creates the Inception movie data
-private func createInceptionMovie() -> MovieModel {
-    return MovieModel(
-        title: "Title: Inception",
-        score: "Popularity Score: 198.532",
-        year: "Release Year: 2010",
-        image: "brain.head.profile",
-        description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-        rating: "Ratings: 8.8/10",
-        detailedYear: "Release Year: 2010-07-16",
-        voteCount: "Vote Count: 32000",
-        genreId: "Genre IDs: 878"
-    )
-}
-
-/// Creates The Dark Knight movie data
-private func createDarkKnightMovie() -> MovieModel {
-    return MovieModel(
-        title: "Title: The Dark Knight",
-        score: "Popularity Score: 210.987",
-        year: "Release Year: 2008",
-        image: "moon.stars.fill",
-        description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-        rating: "Ratings: 9.0/10",
-        detailedYear: "Release Year: 2008-07-18",
-        voteCount: "Vote Count: 28000",
-        genreId: "Genre IDs: 28"
-    )
-}

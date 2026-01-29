@@ -13,13 +13,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        let objWelcome = MovieListVC()
-        let navController = UINavigationController(rootViewController: objWelcome)
+        // Show launch screen first
+        let launchVC = LaunchScreenViewController()
         
-
         guard let scene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: scene)
-        self.window?.rootViewController = navController
+        self.window?.rootViewController = launchVC
         self.window?.makeKeyAndVisible()
     }
 

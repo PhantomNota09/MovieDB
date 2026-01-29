@@ -14,7 +14,7 @@ final class MovieListVC: UIViewController {
     
     // MARK: - Constants
     var movieTableView: UITableView?
-    var pageLable: UILabel?
+    var pageLabel: UILabel?
     private var movieData: [MovieModel] = []
     
     /// Enum for table view configuration values
@@ -32,7 +32,8 @@ final class MovieListVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpLabel()
+        view.backgroundColor = .white
+        setupTitleLabel()
         setupTableView()
         loadMovieData()
     }
@@ -42,24 +43,23 @@ final class MovieListVC: UIViewController {
 
 private extension MovieListVC {
     
-    /// Setting up label and add constraints
-    func setUpLabel() {
-        pageLable = UILabel()
-        pageLable?.text = "Movie List"
-        pageLable?.textColor = .black
-        pageLable?.backgroundColor = .white
-        pageLable?.font = UIFont.boldSystemFont(ofSize: 24)
-        pageLable?.numberOfLines = 1
-        pageLable?.textAlignment = .center
-        pageLable?.translatesAutoresizingMaskIntoConstraints = false
+    func setupTitleLabel() {
+        pageLabel = UILabel()
+        pageLabel?.text = "Movie List"
+        pageLabel?.textColor = .black
+        pageLabel?.backgroundColor = .white
+        pageLabel?.font = UIFont.boldSystemFont(ofSize: 32)
+        pageLabel?.textAlignment = .center
+        pageLabel?.numberOfLines = 0
+        pageLabel?.translatesAutoresizingMaskIntoConstraints = false
         
-        if let pageLable = pageLable {
-            view.addSubview(pageLable)
+        if let pageLabel = pageLabel{
+            view.addSubview(pageLabel)
             NSLayoutConstraint.activate([
-                pageLable.topAnchor.constraint(equalTo: view.topAnchor),
-                pageLable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -680),
-                pageLable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                pageLable.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                pageLabel.topAnchor.constraint(equalTo: view.topAnchor),
+                pageLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -670),
+                pageLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                pageLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor)
             ])
         }
     }
@@ -72,18 +72,16 @@ private extension MovieListVC {
         movieTableView?.register(MovieTableViewCell.self, forCellReuseIdentifier: Identifiers.movieTableViewCell)
         movieTableView?.translatesAutoresizingMaskIntoConstraints = false
         
-        if let tableView = movieTableView, let pageLable = pageLable {
+        if let tableView = movieTableView, let pageLabel = pageLabel {
             view.addSubview(tableView)
             NSLayoutConstraint.activate([
-                tableView.topAnchor.constraint(equalTo: pageLable.bottomAnchor, constant: -60),
+                tableView.topAnchor.constraint(equalTo: pageLabel.bottomAnchor, constant: -70),
                 tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                 tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
             ])
         }
     }
-    
-
     
     /// Loads movie data from mock data source
     func loadMovieData() {
@@ -137,14 +135,13 @@ private extension MovieListVC {
     
     /// Configures a movie cell with the provided movie data
     func configureCell(_ cell: MovieTableViewCell, with movie: MovieModel) {
-        cell.movieTitleLabel.text = movie.title ?? ""
-        cell.movieScoreLabel.text = movie.score ?? ""
-        cell.movieReleaseLabel.text = movie.year ?? ""
+        // Using computed properties from the model for formatted display
+        cell.movieTitleLabel.text = movie.displayTitle
+        cell.movieScoreLabel.text = movie.displayScore
+        cell.movieReleaseLabel.text = movie.displayYear
         
-        // Set poster image if available
-        if let imageName = movie.image {
-            cell.moviePosterImageView.image = UIImage(systemName: imageName)
-        }
+        // Set poster image
+        cell.moviePosterImageView.image = UIImage(systemName: movie.imageName)
     }
 }
 
