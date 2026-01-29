@@ -13,6 +13,8 @@ import UIKit
 final class MovieListVC: UIViewController {
     
     // MARK: - Constants
+    var movieTableView: UITableView?
+    private var movieData: [MovieModel] = []
     
     /// Enum for table view configuration values
     private enum TableViewConfig {
@@ -20,20 +22,10 @@ final class MovieListVC: UIViewController {
         static let numberOfSections = 1
     }
     
-    /// Enum for cell and view controller identifiers
+    /// Enum for cell identifiers
     private enum Identifiers {
-        static let movieCell = "MovieTableViewCell"
-        static let detailViewController = "MovieDetailViewController"
+        static let movieTableViewCell = "MovieTableViewCell"
     }
-    
-    // MARK: - Outlets
-    
-    @IBOutlet weak var movieTableView: UITableView!
-    
-    // MARK: - Properties
-    
-    /// Array containing all movie data to display
-    private var movieData: [MovieModel] = []
     
     // MARK: - Lifecycle Methods
     
@@ -41,7 +33,6 @@ final class MovieListVC: UIViewController {
         super.viewDidLoad()
         setupTableView()
         loadMovieData()
-        configureNavigationBar()
     }
 }
 
@@ -51,19 +42,26 @@ private extension MovieListVC {
     
     /// Configures the table view delegate and data source
     func setupTableView() {
-        movieTableView.delegate = self
-        movieTableView.dataSource = self
+        movieTableView = UITableView()
+        movieTableView?.delegate = self
+        movieTableView?.dataSource = self
+        movieTableView?.register(MovieTableViewCell.self, forCellReuseIdentifier: Identifiers.movieTableViewCell)
+        movieTableView?.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let tableView = movieTableView {
+            view.addSubview(tableView)
+            NSLayoutConstraint.activate([
+                tableView.topAnchor.constraint(equalTo: view.topAnchor),
+                tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+        }
     }
     
     /// Loads movie data from mock data source
     func loadMovieData() {
         movieData = MockData()
-    }
-    
-    /// Configures navigation bar appearance
-    func configureNavigationBar() {
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
     }
 }
 
@@ -80,10 +78,7 @@ extension MovieListVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: Identifiers.movieCell,
-            for: indexPath
-        ) as? MovieTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifiers.movieTableViewCell, for: indexPath) as? MovieTableViewCell else {
             return UITableViewCell()
         }
         
@@ -133,12 +128,7 @@ private extension MovieListVC {
     
     /// Navigates to the movie detail screen with the selected movie
     func navigateToMovieDetail(with movie: MovieModel) {
-        guard let detailVC = storyboard?.instantiateViewController(
-            withIdentifier: Identifiers.detailViewController
-        ) as? MovieDetailViewController else {
-            return
-        }
-        
+        let detailVC = MovieDetailViewController()
         detailVC.movie = movie
         navigationController?.pushViewController(detailVC, animated: true)
     }
