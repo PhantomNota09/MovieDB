@@ -9,22 +9,24 @@ import UIKit
 
 // MARK: - Movie List View Controller
 
-/// Displays a list of movies in a table view with navigation to detail screen
-final class MovieListVC: UIViewController {
+class MovieListVC: UIViewController {
     
-    // MARK: - Constants
+    // MARK: - Properties
+    
     var movieTableView: UITableView?
     var pageLabel: UILabel?
-    private var movieData: [MovieModel] = []
+    
+    /// View model managing movie data and business logic
+    let viewModel = MovieViewModel()
     
     /// Enum for table view configuration values
-    private enum TableViewConfig {
+    enum TableViewConfig {
         static let rowHeight: CGFloat = 160
         static let numberOfSections = 1
     }
     
     /// Enum for cell identifiers
-    private enum Identifiers {
+    enum Identifiers {
         static let movieTableViewCell = "MovieTableViewCell"
     }
     
@@ -33,9 +35,13 @@ final class MovieListVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        // load movies
+        viewModel.loadMovies()
+        
         setupTitleLabel()
+        
         setupTableView()
-        loadMovieData()
     }
 }
 
@@ -82,11 +88,6 @@ private extension MovieListVC {
             ])
         }
     }
-    
-    /// Loads movie data from mock data source
-    func loadMovieData() {
-        movieData = MockData()
-    }
 }
 
 // MARK: - UITableViewDataSource
@@ -98,7 +99,7 @@ extension MovieListVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movieData.count
+        return viewModel.numberOfMovies
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -106,7 +107,10 @@ extension MovieListVC: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let movie = movieData[indexPath.row]
+        guard let movie = viewModel.movie(at: indexPath.row) else {
+            return cell
+        }
+        
         configureCell(cell, with: movie)
         
         return cell
@@ -124,7 +128,10 @@ extension MovieListVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedMovie = movieData[indexPath.row]
+        guard let selectedMovie = viewModel.movie(at: indexPath.row) else {
+            return
+        }
+        
         navigateToMovieDetail(with: selectedMovie)
     }
 }
@@ -135,10 +142,10 @@ private extension MovieListVC {
     
     /// Configures a movie cell with the provided movie data
     func configureCell(_ cell: MovieTableViewCell, with movie: MovieModel) {
-        // Using computed properties from the model for formatted display
-        cell.movieTitleLabel.text = movie.displayTitle
-        cell.movieScoreLabel.text = movie.displayScore
-        cell.movieReleaseLabel.text = movie.displayYear
+        // Using view model's formatting methods
+        cell.movieTitleLabel.text = viewModel.formatTitle(movie.title)
+        cell.movieScoreLabel.text = viewModel.formatPopularityScore(movie.popularityScore)
+        cell.movieReleaseLabel.text = viewModel.formatReleaseYear(movie.releaseYear)
         
         // Set poster image
         cell.moviePosterImageView.image = UIImage(systemName: movie.imageName)

@@ -14,10 +14,10 @@
             filePath = "MovieDB/Model/MovieModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "104"
-            endingLineNumber = "104"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "MovieModel"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -49,6 +49,9 @@ final class MovieDetailViewController: UIViewController {
     /// The movie object to display details for
     var movie: MovieModel?
     
+    /// View model for formatting movie data
+    private let viewModel = MovieViewModel()
+    
     // MARK: - Lifecycle Methods
 
     override func viewDidLoad() {
@@ -230,14 +233,14 @@ private extension MovieDetailViewController {
     
     /// Populates all UI elements with movie information
     func populateMovieDetails(with movie: MovieModel) {
-        // Using computed properties from the model for formatted display
-        movieTitleLabel?.text = movie.displayTitle
+        // Using view model's formatting methods
+        movieTitleLabel?.text = viewModel.formatTitle(movie.title)
         movieDescriptionLabel?.text = movie.plotDescription
-        movieScoreLabel?.text = movie.displayScore
-        movieRatingLabel?.text = movie.displayRating
-        movieReleaseYearLabel?.text = movie.displayReleaseDate
-        movieVoteLabel?.text = movie.displayVoteCount
-        movieGenreIdLabel?.text = movie.displayGenreId
+        movieScoreLabel?.text = viewModel.formatPopularityScore(movie.popularityScore)
+        movieRatingLabel?.text = viewModel.formatRating(movie.rating)
+        movieReleaseYearLabel?.text = viewModel.formatReleaseDate(movie.releaseDate)
+        movieVoteLabel?.text = viewModel.formatVoteCount(movie.voteCount)
+        movieGenreIdLabel?.text = viewModel.formatGenreId(movie.genreId)
         
         // Set movie poster image
         movieImageView?.image = UIImage(systemName: movie.imageName)
