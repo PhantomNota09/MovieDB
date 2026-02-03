@@ -23,13 +23,14 @@ MovieDB is a straightforward iOS app that showcases a collection of popular movi
 
 ### Architecture
 
-The app follows the **MVC (Model-View-Controller)** pattern:
+The app follows the **MVVM (Model-View-ViewModel)** pattern:
 
-- **Model**: `MovieModel` - Represents movie data
+- **Model**: `MovieModel` - Represents movie data with properties like title, rating, release date, etc.
+- **ViewModel**: `MovieViewModel` - Manages movie data, provides formatting methods, and handles business logic
 - **View**: Storyboard-based UI with custom `MovieTableViewCell`
 - **Controller**: 
-  - `MovieListVC` - Manages the movie list display
-  - `MovieDetailViewController` - Handles detailed movie information
+  - `MovieListVC` - Manages the movie list display and user interactions
+  - `MovieDetailViewController` - Handles detailed movie information display
 
 ## Sample Movies Included
 
