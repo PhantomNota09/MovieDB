@@ -9,47 +9,46 @@ import UIKit
 
 // MARK: - Movie Detail View Controller
 
-/// Displays detailed information about a selected movie
 final class MovieDetailViewController: UIViewController {
     
     // MARK: - UI Components
     
-    /// Scroll view to contain all content
-    private var scrollView: UIScrollView?
+    // Scroll view
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     
-    /// Content view inside scroll view
-    private var contentView: UIView?
+    // Hero banner at top
+    private let heroImageView = UIImageView()
     
-    /// Image view displaying the movie poster
-    private var movieImageView: UIImageView?
+    // Info card section
+    private let posterIconView = UIImageView()
+    private let movieTitleLabel = UILabel()
+    private let genreLabel = UILabel()
     
-    /// Label displaying the movie title
-    private var movieTitleLabel: UILabel?
+    // Stats section (Rating, Year, Popularity)
+    private let ratingValueLabel = UILabel()
+    private let ratingTitleLabel = UILabel()
     
-    /// Label displaying the movie description
-    private var movieDescriptionLabel: UILabel?
+    private let yearValueLabel = UILabel()
+    private let yearTitleLabel = UILabel()
     
-    /// Label displaying the movie popularity score
-    private var movieScoreLabel: UILabel?
+    private let popularityValueLabel = UILabel()
+    private let popularityTitleLabel = UILabel()
     
-    /// Label displaying the movie rating
-    private var movieRatingLabel: UILabel?
+    // Overview section
+    private let overviewHeaderLabel = UILabel()
+    private let overviewTextLabel = UILabel()
     
-    /// Label displaying the movie release year
-    private var movieReleaseYearLabel: UILabel?
-    
-    /// Label displaying the vote count
-    private var movieVoteLabel: UILabel?
-    
-    /// Label displaying the genre identifier
-    private var movieGenreIdLabel: UILabel?
+    // Details section
+    private let detailsHeaderLabel = UILabel()
+    private let releaseDateValueLabel = UILabel()
+    private let voteCountValueLabel = UILabel()
+    private let genreIdValueLabel = UILabel()
     
     // MARK: - Properties
     
-    /// The movie object to display details for
     var movie: MovieModel?
     
-    /// View model for formatting movie data
     private let viewModel = MovieViewModel()
     
     // MARK: - Lifecycle Methods
@@ -57,7 +56,7 @@ final class MovieDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupUI()
         configureView()
     }
@@ -67,157 +66,210 @@ final class MovieDetailViewController: UIViewController {
 
 private extension MovieDetailViewController {
     
-    /// Sets up all UI components and constraints
     func setupUI() {
-        // Initialize scroll view
-        scrollView = UIScrollView()
-        scrollView?.translatesAutoresizingMaskIntoConstraints = false
+        // Setup scroll view
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = true
+        view.addSubview(scrollView)
         
-        // Initialize content view
-        contentView = UIView()
-        contentView?.translatesAutoresizingMaskIntoConstraints = false
+        // Setup content view
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
         
-        // Initialize title label
-        movieTitleLabel = UILabel()
-        movieTitleLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieTitleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
-        movieTitleLabel?.numberOfLines = 0
-        movieTitleLabel?.textAlignment = .center
+        // Setup hero image
+        heroImageView.translatesAutoresizingMaskIntoConstraints = false
+        heroImageView.contentMode = .scaleAspectFill
+        heroImageView.clipsToBounds = true
+        contentView.addSubview(heroImageView)
         
-        // Initialize image view
-        movieImageView = UIImageView()
-        movieImageView?.translatesAutoresizingMaskIntoConstraints = false
-        movieImageView?.contentMode = .scaleAspectFit
-        movieImageView?.tintColor = .lightGray
+        // Setup poster icon
+        posterIconView.translatesAutoresizingMaskIntoConstraints = false
+        posterIconView.contentMode = .scaleAspectFit
+        posterIconView.tintColor = .label
+        posterIconView.layer.cornerRadius = 20
+        posterIconView.clipsToBounds = true
+        posterIconView.backgroundColor = .secondarySystemBackground
+        contentView.addSubview(posterIconView)
         
-        // Initialize description label
-        movieDescriptionLabel = UILabel()
-        movieDescriptionLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieDescriptionLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieDescriptionLabel?.numberOfLines = 0
-        movieDescriptionLabel?.textAlignment = .center
+        // Setup title label
+        movieTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        movieTitleLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        movieTitleLabel.numberOfLines = 2
+        contentView.addSubview(movieTitleLabel)
         
-        // Initialize score label
-        movieScoreLabel = UILabel()
-        movieScoreLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieScoreLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieScoreLabel?.numberOfLines = 0
-        movieScoreLabel?.textAlignment = .center
+        // Setup genre label
+        genreLabel.translatesAutoresizingMaskIntoConstraints = false
+        genreLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        genreLabel.textColor = .secondaryLabel
+        genreLabel.numberOfLines = 1
+        contentView.addSubview(genreLabel)
         
-        // Initialize rating label
-        movieRatingLabel = UILabel()
-        movieRatingLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieRatingLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieRatingLabel?.numberOfLines = 0
-        movieRatingLabel?.textAlignment = .center
+        // Setup rating stat
+        ratingValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        ratingValueLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        ratingValueLabel.textAlignment = .center
+        contentView.addSubview(ratingValueLabel)
         
-        // Initialize release year label
-        movieReleaseYearLabel = UILabel()
-        movieReleaseYearLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieReleaseYearLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieReleaseYearLabel?.numberOfLines = 0
-        movieReleaseYearLabel?.textAlignment = .center
+        ratingTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        ratingTitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        ratingTitleLabel.textColor = .secondaryLabel
+        ratingTitleLabel.textAlignment = .center
+        contentView.addSubview(ratingTitleLabel)
         
-        // Initialize vote label
-        movieVoteLabel = UILabel()
-        movieVoteLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieVoteLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieVoteLabel?.numberOfLines = 0
-        movieVoteLabel?.textAlignment = .center
+        // Setup year stat
+        yearValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        yearValueLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        yearValueLabel.textAlignment = .center
+        contentView.addSubview(yearValueLabel)
         
-        // Initialize genre ID label
-        movieGenreIdLabel = UILabel()
-        movieGenreIdLabel?.translatesAutoresizingMaskIntoConstraints = false
-        movieGenreIdLabel?.font = UIFont.systemFont(ofSize: 16)
-        movieGenreIdLabel?.numberOfLines = 0
-        movieGenreIdLabel?.textAlignment = .center
+        yearTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        yearTitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        yearTitleLabel.textColor = .secondaryLabel
+        yearTitleLabel.textAlignment = .center
+        contentView.addSubview(yearTitleLabel)
         
-        // Add all subviews and set up constraints in one if let
-        if let scrollView = scrollView,
-           let contentView = contentView,
-           let movieTitleLabel = movieTitleLabel,
-           let movieImageView = movieImageView,
-           let movieDescriptionLabel = movieDescriptionLabel,
-           let movieScoreLabel = movieScoreLabel,
-           let movieRatingLabel = movieRatingLabel,
-           let movieReleaseYearLabel = movieReleaseYearLabel,
-           let movieVoteLabel = movieVoteLabel,
-           let movieGenreIdLabel = movieGenreIdLabel {
+        // Setup popularity stat
+        popularityValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        popularityValueLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        popularityValueLabel.textAlignment = .center
+        contentView.addSubview(popularityValueLabel)
+        
+        popularityTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        popularityTitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        popularityTitleLabel.textColor = .secondaryLabel
+        popularityTitleLabel.textAlignment = .center
+        contentView.addSubview(popularityTitleLabel)
+        
+        // Setup overview section
+        overviewHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
+        overviewHeaderLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        overviewHeaderLabel.text = "Overview"
+        contentView.addSubview(overviewHeaderLabel)
+        
+        overviewTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        overviewTextLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        overviewTextLabel.textColor = .secondaryLabel
+        overviewTextLabel.numberOfLines = 0
+        contentView.addSubview(overviewTextLabel)
+        
+        // Setup details section
+        detailsHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
+        detailsHeaderLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        detailsHeaderLabel.text = "Details"
+        contentView.addSubview(detailsHeaderLabel)
+        
+        releaseDateValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        releaseDateValueLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        releaseDateValueLabel.numberOfLines = 0
+        contentView.addSubview(releaseDateValueLabel)
+        
+        voteCountValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        voteCountValueLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        voteCountValueLabel.numberOfLines = 0
+        contentView.addSubview(voteCountValueLabel)
+        
+        genreIdValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        genreIdValueLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        genreIdValueLabel.numberOfLines = 0
+        contentView.addSubview(genreIdValueLabel)
+        
+        setupConstraints()
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            // Scroll view
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            // Add scroll view to main view
-            view.addSubview(scrollView)
+            // Content view
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            // Add content view to scroll view
-            scrollView.addSubview(contentView)
+            // Hero image
+            heroImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            heroImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            heroImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            heroImageView.heightAnchor.constraint(equalToConstant: 280),
             
-            // Add all labels and image view to content view
-            contentView.addSubview(movieTitleLabel)
-            contentView.addSubview(movieImageView)
-            contentView.addSubview(movieDescriptionLabel)
-            contentView.addSubview(movieScoreLabel)
-            contentView.addSubview(movieRatingLabel)
-            contentView.addSubview(movieReleaseYearLabel)
-            contentView.addSubview(movieVoteLabel)
-            contentView.addSubview(movieGenreIdLabel)
+            // Poster icon
+            posterIconView.topAnchor.constraint(equalTo: heroImageView.bottomAnchor, constant: 20),
+            posterIconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            posterIconView.widthAnchor.constraint(equalToConstant: 80),
+            posterIconView.heightAnchor.constraint(equalToConstant: 80),
             
-            // Activate all constraints at once
-            NSLayoutConstraint.activate([
-                // Scroll view constraints
-                scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                
-                // Content view constraints
-                contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-                contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-                contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-                contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-                contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-                
-                // Title label constraints
-                movieTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-                movieTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Image view constraints
-                movieImageView.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 20),
-                movieImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-                movieImageView.widthAnchor.constraint(equalToConstant: 200),
-                movieImageView.heightAnchor.constraint(equalToConstant: 250),
-                
-                // Description label constraints
-                movieDescriptionLabel.topAnchor.constraint(equalTo: movieImageView.bottomAnchor, constant: 20),
-                movieDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Score label constraints
-                movieScoreLabel.topAnchor.constraint(equalTo: movieDescriptionLabel.bottomAnchor, constant: 16),
-                movieScoreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieScoreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Rating label constraints
-                movieRatingLabel.topAnchor.constraint(equalTo: movieScoreLabel.bottomAnchor, constant: 16),
-                movieRatingLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieRatingLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Release year label constraints
-                movieReleaseYearLabel.topAnchor.constraint(equalTo: movieRatingLabel.bottomAnchor, constant: 16),
-                movieReleaseYearLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieReleaseYearLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Vote label constraints
-                movieVoteLabel.topAnchor.constraint(equalTo: movieReleaseYearLabel.bottomAnchor, constant: 16),
-                movieVoteLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieVoteLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                
-                // Genre ID label constraints
-                movieGenreIdLabel.topAnchor.constraint(equalTo: movieVoteLabel.bottomAnchor, constant: 16),
-                movieGenreIdLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-                movieGenreIdLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                movieGenreIdLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
-            ])
-        }
+            // Title label
+            movieTitleLabel.leadingAnchor.constraint(equalTo: posterIconView.trailingAnchor, constant: 16),
+            movieTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            movieTitleLabel.topAnchor.constraint(equalTo: posterIconView.topAnchor, constant: 8),
+            
+            // Genre label
+            genreLabel.leadingAnchor.constraint(equalTo: movieTitleLabel.leadingAnchor),
+            genreLabel.trailingAnchor.constraint(equalTo: movieTitleLabel.trailingAnchor),
+            genreLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 4),
+            
+            // Rating stat (left)
+            ratingValueLabel.topAnchor.constraint(equalTo: posterIconView.bottomAnchor, constant: 30),
+            ratingValueLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            ratingValueLabel.trailingAnchor.constraint(equalTo: yearValueLabel.leadingAnchor, constant: -8),
+            
+            ratingTitleLabel.topAnchor.constraint(equalTo: ratingValueLabel.bottomAnchor, constant: 2),
+            ratingTitleLabel.leadingAnchor.constraint(equalTo: ratingValueLabel.leadingAnchor),
+            ratingTitleLabel.trailingAnchor.constraint(equalTo: ratingValueLabel.trailingAnchor),
+            
+            // Year stat (center)
+            yearValueLabel.topAnchor.constraint(equalTo: ratingValueLabel.topAnchor),
+            yearValueLabel.widthAnchor.constraint(equalTo: ratingValueLabel.widthAnchor),
+            yearValueLabel.trailingAnchor.constraint(equalTo: popularityValueLabel.leadingAnchor, constant: -8),
+            
+            yearTitleLabel.topAnchor.constraint(equalTo: yearValueLabel.bottomAnchor, constant: 2),
+            yearTitleLabel.leadingAnchor.constraint(equalTo: yearValueLabel.leadingAnchor),
+            yearTitleLabel.trailingAnchor.constraint(equalTo: yearValueLabel.trailingAnchor),
+            
+            // Popularity stat (right)
+            popularityValueLabel.topAnchor.constraint(equalTo: ratingValueLabel.topAnchor),
+            popularityValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            popularityValueLabel.widthAnchor.constraint(equalTo: ratingValueLabel.widthAnchor),
+            
+            popularityTitleLabel.topAnchor.constraint(equalTo: popularityValueLabel.bottomAnchor, constant: 2),
+            popularityTitleLabel.leadingAnchor.constraint(equalTo: popularityValueLabel.leadingAnchor),
+            popularityTitleLabel.trailingAnchor.constraint(equalTo: popularityValueLabel.trailingAnchor),
+            
+            // Overview section
+            overviewHeaderLabel.topAnchor.constraint(equalTo: ratingTitleLabel.bottomAnchor, constant: 32),
+            overviewHeaderLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            overviewHeaderLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            overviewTextLabel.topAnchor.constraint(equalTo: overviewHeaderLabel.bottomAnchor, constant: 8),
+            overviewTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            overviewTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            // Details section
+            detailsHeaderLabel.topAnchor.constraint(equalTo: overviewTextLabel.bottomAnchor, constant: 32),
+            detailsHeaderLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            detailsHeaderLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            // Release Date
+            releaseDateValueLabel.topAnchor.constraint(equalTo: detailsHeaderLabel.bottomAnchor, constant: 12),
+            releaseDateValueLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            releaseDateValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            // Vote Count
+            voteCountValueLabel.topAnchor.constraint(equalTo: releaseDateValueLabel.bottomAnchor, constant: 8),
+            voteCountValueLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            voteCountValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            
+            // Genre ID
+            genreIdValueLabel.topAnchor.constraint(equalTo: voteCountValueLabel.bottomAnchor, constant: 8),
+            genreIdValueLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            genreIdValueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            genreIdValueLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40)
+        ])
     }
 }
 
@@ -225,24 +277,38 @@ private extension MovieDetailViewController {
 
 private extension MovieDetailViewController {
     
-    /// Configures the view with movie data
     func configureView() {
         guard let movie = movie else { return }
-        populateMovieDetails(with: movie)
-    }
-    
-    /// Populates all UI elements with movie information
-    func populateMovieDetails(with movie: MovieModel) {
-        // Using view model's formatting methods
-        movieTitleLabel?.text = viewModel.formatTitle(movie.title)
-        movieDescriptionLabel?.text = movie.plotDescription
-        movieScoreLabel?.text = viewModel.formatPopularityScore(movie.popularityScore)
-        movieRatingLabel?.text = viewModel.formatRating(movie.rating)
-        movieReleaseYearLabel?.text = viewModel.formatReleaseDate(movie.releaseDate)
-        movieVoteLabel?.text = viewModel.formatVoteCount(movie.voteCount)
-        movieGenreIdLabel?.text = viewModel.formatGenreId(movie.genreId)
         
-        // Set movie poster image
-        movieImageView?.image = UIImage(systemName: movie.imageName)
+        // Hero image
+        heroImageView.image = UIImage(systemName: movie.imageName)
+        heroImageView.tintColor = .systemGray
+        
+        // Poster icon
+        posterIconView.image = UIImage(systemName: movie.imageName)
+        
+        // Title and genre
+        movieTitleLabel.text = movie.title
+        genreLabel.text = "\(movie.genreId)"
+        
+        // Rating stat
+        ratingValueLabel.text = String(format: "%.1f", movie.rating)
+        ratingTitleLabel.text = "Rating"
+        
+        // Year stat
+        yearValueLabel.text = "\(movie.releaseYear)"
+        yearTitleLabel.text = "Year"
+        
+        // Popularity stat
+        popularityValueLabel.text = String(format: "%.3f", movie.popularityScore)
+        popularityTitleLabel.text = "Popularity Score"
+        
+        // Overview
+        overviewTextLabel.text = movie.plotDescription
+        
+        // Details
+        releaseDateValueLabel.text = "\(viewModel.formatReleaseDate(movie.releaseDate))"
+        voteCountValueLabel.text = "\(viewModel.formatVoteCount(movie.voteCount))"
+        genreIdValueLabel.text = "Genre ID: \(movie.genreId)"
     }
 }

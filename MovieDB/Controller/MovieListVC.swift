@@ -115,17 +115,18 @@ private extension MovieListVC {
         let layout = UICollectionViewFlowLayout()
         
         // Cell sizing
-        layout.itemSize = CGSize(width: 160, height: 220)
+        // layout.itemSize = CGSize(width: 160, height: 220)
+        layout.itemSize = CGSize(width: view.frame.width/2.25, height: view.frame.width/2)
         
         // Vertical scroll direction
         layout.scrollDirection = .vertical
         
         // Section insets for padding
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         
         // Spacing between items
-        layout.minimumInteritemSpacing = 10  // Horizontal spacing between items
-        layout.minimumLineSpacing = 15       // Vertical spacing between rows
+        // layout.minimumInteritemSpacing = 10  // Horizontal spacing between items
+        // layout.minimumLineSpacing = 15       // Vertical spacing between rows
         
         movieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         movieCollectionView?.backgroundColor = .systemBackground
