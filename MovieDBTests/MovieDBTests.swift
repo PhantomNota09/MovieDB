@@ -10,27 +10,65 @@ import XCTest
 
 final class MovieDBTests: XCTestCase {
 
+    var objCalculator : Calculator?
+    var objMovieViewModel : MovieViewModel?
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        objCalculator = Calculator()
+        objMovieViewModel = MovieViewModel()
     }
-
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        objCalculator = nil
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    func testSum() {
+        let result1 = objCalculator?.sum(a: 10, b: 20)
+        XCTAssertEqual(result1, 30)
+        
+        let result2 = objCalculator?.sum(a: nil, b: 20)
+        XCTAssertEqual(result2, 0)
+        
+        let result3 = objCalculator?.sum(a: nil, b: nil)
+        XCTAssertEqual(result3, 0)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testMultiplication() {
+        let result1 = objCalculator?.multiply(a: 10, b: 20)
+        XCTAssertEqual(result1, 200)
+        
+        let result2 = objCalculator?.multiply(a: nil, b: 20)
+        XCTAssertEqual(result2, 0)
+        
+        let result3 = objCalculator?.multiply(a: nil, b: nil)
+        XCTAssertEqual(result3, 0)
     }
-
+    
+    func testDivision() {
+        let result1 = objCalculator?.divide(a: 100, b: 20)
+        XCTAssertEqual(result1, 5)
+        
+        let result2 = objCalculator?.divide(a: nil, b: 20)
+        XCTAssertEqual(result2, 0)
+        
+        let result3 = objCalculator?.divide(a: nil, b: nil)
+        XCTAssertEqual(result3, 0)
+    }
+    
+    func testSubtraction() {
+        let result1 = objCalculator?.subtract(a: 100, b: 20)
+        XCTAssertEqual(result1, 80)
+        
+        let result2 = objCalculator?.subtract(a: nil, b: 20)
+        XCTAssertEqual(result2, 0)
+        
+        let result3 = objCalculator?.subtract(a: nil, b: nil)
+        XCTAssertEqual(result3, 0)
+    }
+    
+    func testNumberOfMovies() {
+        let result1 = objMovieViewModel?.numberOfMoviesFunc() ?? 0
+        print(result1)
+        XCTAssertEqual(result1, 0)
+    }
 }

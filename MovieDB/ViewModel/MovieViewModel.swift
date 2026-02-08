@@ -20,6 +20,10 @@ final class MovieViewModel {
         return movies.count
     }
     
+    func numberOfMoviesFunc() -> Int {
+        return movies.count
+    }
+    
     // MARK: - Data Loading
     
     /// Loads movie data from the mock data source
