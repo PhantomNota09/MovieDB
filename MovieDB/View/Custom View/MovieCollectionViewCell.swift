@@ -71,18 +71,18 @@ class MovieCollectionViewCell: UICollectionViewCell {
         // Setup constraints with improved spacing
         NSLayoutConstraint.activate([
             // Image view constraints - centered at top with more padding
-            moviePosterImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            moviePosterImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             moviePosterImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             moviePosterImageView.widthAnchor.constraint(equalToConstant: 100),
             moviePosterImageView.heightAnchor.constraint(equalToConstant: 120),
             
             // Title label constraints with better spacing
-            movieTitleLabel.topAnchor.constraint(equalTo: moviePosterImageView.bottomAnchor, constant: 12),
+            movieTitleLabel.topAnchor.constraint(equalTo: moviePosterImageView.bottomAnchor, constant: 8),
             movieTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             movieTitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             
             // Score label constraints with improved spacing
-            movieScoreLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 8),
+            movieScoreLabel.topAnchor.constraint(equalTo: movieTitleLabel.bottomAnchor, constant: 4),
             movieScoreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             movieScoreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             

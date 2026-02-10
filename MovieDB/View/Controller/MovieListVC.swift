@@ -41,19 +41,12 @@ class MovieListVC: UIViewController {
 //        static let movieTableViewCell = "MovieTableViewCell"
 //    }
     
-    /// Enum for cell identifiers
-    enum Identifiers {
-        static let movieCollectionViewCell = "MovieCollectionViewCell"
-    }
     
     // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        // load movies
-        viewModel.loadMovies()
         
         setupTitleLabel()
         
@@ -62,6 +55,11 @@ class MovieListVC: UIViewController {
         
         // Collection View Setup
         setupCollectionView()
+        
+        Task {
+           await viewModel.loadMovies() // load movies
+           movieCollectionView?.reloadData() // Refresh the collection view to show movies
+        }
     }
 }
 
@@ -253,10 +251,19 @@ private extension MovieListVC {
     
     /// Configures a movie collection cell with the provided movie data
     func configureCollectionCell(_ cell: MovieCollectionViewCell, with movie: MovieModel) {
+        
+        let rating = String(format: "%.1f", movie.vote_average ?? 0)
+
         cell.movieTitleLabel.text = movie.title
-        cell.movieScoreLabel.text = "Score: \(movie.popularityScore)"
-        cell.movieReleaseLabel.text = "Year: \(movie.releaseYear)"
-        cell.moviePosterImageView.image = UIImage(systemName: movie.imageName)
+        
+        cell.movieReleaseLabel.text = "Year: \(movie.release_date ?? "Unknown")"
+        
+        cell.movieScoreLabel.text = "Rating: \(rating)"
+        
+        let imagePath = Server.ImageBaseUrl.rawValue + (movie.poster_path ?? "")
+        Task {
+                await cell.moviePosterImageView.loadImage(url: imagePath)
+        }
     }
 }
 
