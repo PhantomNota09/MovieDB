@@ -43,6 +43,8 @@ The app includes mock data for the following movies:
 - The Dark Knight (2008)
 
 ## Screenshots
+<img width="120" height="262" alt="simulator_screenshot_7C3BDA6B-BDA7-4415-AB56-764DFAE4C215" src="https://github.com/user-attachments/assets/21ff8986-012c-4e9a-8157-ae149ca4eff5" />
+<img width="120" height="262" alt="simulator_screenshot_E03EE9E0-079F-4F4B-BC41-D526110DCD99" src="https://github.com/user-attachments/assets/5b291e7e-9e64-4597-bb52-9a211b615d84" />
 
-<img width="120" height="262" alt="simulator_screenshot_81F9D084-0E2E-4601-A91B-17C2B3F4CD78" src="https://github.com/user-attachments/assets/1fd2d012-6032-4d56-a0db-13093033b9be" />
-<img width="120" height="262" alt="simulator_screenshot_174019C5-3F18-4AEA-A832-A7FD777BD47A" src="https://github.com/user-attachments/assets/fee2984f-d979-49be-b881-5d098c6ad677" />
+
+
