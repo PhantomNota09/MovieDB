@@ -19,9 +19,18 @@ class MovieListVC: UIViewController {
     // Collection View
     var movieCollectionView: UICollectionView?
     var pageLabel: UILabel?
+    var searchBar: UISearchBar?
     
     /// View model managing movie data and business logic
     let viewModel = MovieViewModel()
+    
+    /// Filtered movies based on search
+    var filteredMovies: [MovieModel] = []
+    
+    /// Flag to check if we're currently searching
+    var isSearching: Bool {
+        return searchBar?.text?.isEmpty == false
+    }
     
     // Table View Configuration (Commented Out)
 //    /// Enum for table view configuration values
@@ -49,6 +58,7 @@ class MovieListVC: UIViewController {
         view.backgroundColor = .white
         
         setupTitleLabel()
+        setupSearchBar()
         
         // Table View Setup (Commented Out)
 //        setupTableView()
@@ -80,10 +90,28 @@ private extension MovieListVC {
         if let pageLabel = pageLabel{
             view.addSubview(pageLabel)
             NSLayoutConstraint.activate([
-                pageLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                pageLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -40),
                 pageLabel.heightAnchor.constraint(equalToConstant: 35),
                 pageLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 pageLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+        }
+    }
+    
+    /// Configures the search bar
+    func setupSearchBar() {
+        searchBar = UISearchBar()
+        searchBar?.delegate = self
+        searchBar?.placeholder = "Search movies..."
+        searchBar?.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let searchBar = searchBar, let pageLabel = pageLabel {
+            view.addSubview(searchBar)
+            NSLayoutConstraint.activate([
+                searchBar.topAnchor.constraint(equalTo: pageLabel.bottomAnchor, constant: 5),
+                searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                searchBar.heightAnchor.constraint(equalToConstant: 50)
             ])
         }
     }
@@ -133,11 +161,11 @@ private extension MovieListVC {
         movieCollectionView?.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: Identifiers.movieCollectionViewCell)
         movieCollectionView?.translatesAutoresizingMaskIntoConstraints = false
         
-        if let collectionView = movieCollectionView, let pageLabel = pageLabel {
+        if let collectionView = movieCollectionView, let searchBar = searchBar {
             view.addSubview(collectionView)
             
             NSLayoutConstraint.activate([
-                collectionView.topAnchor.constraint(equalTo: pageLabel.bottomAnchor, constant: 10),
+                collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 5),
                 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
                 collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -182,7 +210,8 @@ extension MovieListVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfMovies
+        // If searching, show filtered results. Otherwise, show all movies
+        return isSearching ? filteredMovies.count : viewModel.numberOfMovies
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -190,7 +219,15 @@ extension MovieListVC: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        guard let movie = viewModel.movie(at: indexPath.item) else {
+        // Get the movie from filtered list if searching, otherwise from viewModel
+        let movie: MovieModel?
+        if isSearching {
+            movie = indexPath.item < filteredMovies.count ? filteredMovies[indexPath.item] : nil
+        } else {
+            movie = viewModel.movie(at: indexPath.item)
+        }
+        
+        guard let movie = movie else {
             return cell
         }
         
@@ -224,7 +261,15 @@ extension MovieListVC: UICollectionViewDataSource {
 extension MovieListVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedMovie = viewModel.movie(at: indexPath.item) else {
+        // Get the movie from filtered list if searching, otherwise from viewModel
+        let selectedMovie: MovieModel?
+        if isSearching {
+            selectedMovie = indexPath.item < filteredMovies.count ? filteredMovies[indexPath.item] : nil
+        } else {
+            selectedMovie = viewModel.movie(at: indexPath.item)
+        }
+        
+        guard let selectedMovie = selectedMovie else {
             return
         }
         
@@ -278,3 +323,54 @@ private extension MovieListVC {
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
+// MARK: - UISearchBarDelegate
+
+extension MovieListVC: UISearchBarDelegate {
+    
+    /// Called when the user types in the search bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterMovies(with: searchText)
+    }
+    
+    /// Called when the user taps the Search button on the keyboard
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder() // Dismiss the keyboard
+    }
+    
+    /// Called when the user taps the Cancel button
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        filteredMovies = []
+        movieCollectionView?.reloadData()
+    }
+}
+
+// MARK: - Search Logic
+
+private extension MovieListVC {
+    
+    /// Filters movies based on search text
+    func filterMovies(with searchText: String) {
+        if searchText.isEmpty {
+            // If search text is empty, clear filtered movies
+            filteredMovies = []
+        } else {
+            // Filter movies by title (case-insensitive)
+            filteredMovies = []
+            
+            // Go through all movies from the viewModel
+            for index in 0..<viewModel.numberOfMovies {
+                if let movie = viewModel.movie(at: index),
+                   let title = movie.title,
+                   title.lowercased().contains(searchText.lowercased()) {
+                    filteredMovies.append(movie)
+                }
+            }
+        }
+        
+        // Reload collection view to show filtered results
+        movieCollectionView?.reloadData()
+    }
+}
+
