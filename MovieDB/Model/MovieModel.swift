@@ -22,10 +22,23 @@ struct MovieModel: Decodable {
     let title: String?
     let overview: String?
     let popularity: Double?
-    let poster_path: String?
-    let backdrop_path: String?
-    let vote_average: Double?
-    let vote_count: Int?
-    let release_date: String?
-    let genre_ids: [Int]?
+    let posterPath: String?
+    let backdropPath: String?
+    let voteAverage: Double?
+    let voteCount: Int?
+    let releaseDate: String?
+    let genreIds: [Int]?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case overview
+        case popularity
+        case posterPath    = "poster_path"
+        case backdropPath  = "backdrop_path"
+        case voteAverage   = "vote_average"
+        case voteCount     = "vote_count"
+        case releaseDate   = "release_date"
+        case genreIds      = "genre_ids"
+    }
 }

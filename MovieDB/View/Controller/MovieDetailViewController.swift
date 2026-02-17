@@ -281,7 +281,7 @@ private extension MovieDetailViewController {
         guard let movie = movie else { return }
         
         // Hero image
-        let coverImagePath = Server.ImageBaseUrl.rawValue + (movie.backdrop_path ?? "")
+        let coverImagePath = Server.ImageBaseUrl.rawValue + (movie.backdropPath ?? "")
         Task{
             await heroImageView.loadImage(url: coverImagePath)
         }
@@ -289,21 +289,21 @@ private extension MovieDetailViewController {
         heroImageView.tintColor = .systemGray
         
         // Poster icon
-        let posterImagePath = Server.ImageBaseUrl.rawValue + (movie.poster_path ?? "")
+        let posterImagePath = Server.ImageBaseUrl.rawValue + (movie.posterPath ?? "")
         Task{
             await posterIconView.loadImage(url: posterImagePath)
         }
         
         // Title and genre
         movieTitleLabel.text = movie.title
-        genreLabel.text = "\(movie.genre_ids ?? [0])"
+        genreLabel.text = "\(movie.genreIds ?? [0])"
         
         // Rating stat
-        ratingValueLabel.text = String(format: "%.1f", movie.vote_average ?? 0)
+        ratingValueLabel.text = String(format: "%.1f", movie.voteAverage ?? 0)
         ratingTitleLabel.text = "Rating"
         
         // Year stat
-        yearValueLabel.text = "\(movie.release_date ?? "ReleaseDateMissing")"
+        yearValueLabel.text = "\(movie.releaseDate ?? "ReleaseDateMissing")"
         yearTitleLabel.text = "Release Date"
         
         // Popularity stat
@@ -314,8 +314,8 @@ private extension MovieDetailViewController {
         overviewTextLabel.text = movie.overview
         
         // Details
-        releaseDateValueLabel.text = "\(viewModel.formatReleaseDate(movie.release_date ?? "releaseDateMissing"))"
-        voteCountValueLabel.text = "\(viewModel.formatVoteCount(movie.vote_count ?? 0))"
-        genreIdValueLabel.text = "Genre IDs: \(movie.genre_ids ?? [0])"
+        releaseDateValueLabel.text = "\(viewModel.formatReleaseDate(movie.releaseDate ?? "releaseDateMissing"))"
+        voteCountValueLabel.text = "\(viewModel.formatVoteCount(movie.voteCount ?? 0))"
+        genreIdValueLabel.text = "Genre IDs: \(movie.genreIds ?? [0])"
     }
 }

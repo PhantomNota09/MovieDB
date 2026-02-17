@@ -297,15 +297,15 @@ private extension MovieListVC {
     /// Configures a movie collection cell with the provided movie data
     func configureCollectionCell(_ cell: MovieCollectionViewCell, with movie: MovieModel) {
         
-        let rating = String(format: "%.1f", movie.vote_average ?? 0)
+        let rating = String(format: "%.1f", movie.voteAverage ?? 0)
 
         cell.movieTitleLabel.text = movie.title
         
-        cell.movieReleaseLabel.text = "Year: \(movie.release_date ?? "Unknown")"
+        cell.movieReleaseLabel.text = "Year: \(movie.releaseDate ?? "Unknown")"
         
         cell.movieScoreLabel.text = "Rating: \(rating)"
         
-        let imagePath = Server.ImageBaseUrl.rawValue + (movie.poster_path ?? "")
+        let imagePath = Server.ImageBaseUrl.rawValue + (movie.posterPath ?? "")
         Task {
                 await cell.moviePosterImageView.loadImage(url: imagePath)
         }
