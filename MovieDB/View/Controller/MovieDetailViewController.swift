@@ -288,19 +288,41 @@ private extension MovieDetailViewController {
         
         heroImageView.tintColor = .systemGray
         
+        // voice over
+        heroImageView.isAccessibilityElement = true
+        heroImageView.accessibilityLabel = "Movie backdrop for \(movie.title ?? "unknown movie")"
+        
         // Poster icon
         let posterImagePath = Server.ImageBaseUrl.rawValue + (movie.posterPath ?? "")
         Task{
             await posterIconView.loadImage(url: posterImagePath)
         }
         
+        // voice over
+        posterIconView.isAccessibilityElement = true
+        posterIconView.accessibilityLabel = "Movie poster for \(movie.title ?? "unknown movie")"
+        
         // Title and genre
         movieTitleLabel.text = movie.title
+        
+        // voice over
+        movieTitleLabel.isAccessibilityElement = true
+        movieTitleLabel.accessibilityLabel = "Title: \(movie.title ?? "unknown")"
+        
         genreLabel.text = "\(movie.genreIds ?? [0])"
+        // voice over
+        genreLabel.isAccessibilityElement = true
+        genreLabel.accessibilityLabel = "Genre IDs: \(movie.genreIds ?? [0])"
         
         // Rating stat
         ratingValueLabel.text = String(format: "%.1f", movie.voteAverage ?? 0)
         ratingTitleLabel.text = "Rating"
+        
+        // Combine rating stat for VoiceOver
+        let ratingContainer = UIView()
+        // voice over
+        ratingContainer.isAccessibilityElement = true
+        ratingContainer.accessibilityLabel = "Rating: \(String(format: "%.1f", movie.voteAverage ?? 0)) out of 10"
         
         // Year stat
         yearValueLabel.text = "\(movie.releaseDate ?? "ReleaseDateMissing")"
@@ -312,10 +334,17 @@ private extension MovieDetailViewController {
         
         // Overview
         overviewTextLabel.text = movie.overview
+        overviewTextLabel.isAccessibilityElement = true
+        overviewTextLabel.accessibilityLabel = "Overview: \(movie.overview ?? "No overview available")"
         
         // Details
         releaseDateValueLabel.text = "\(viewModel.formatReleaseDate(movie.releaseDate ?? "releaseDateMissing"))"
+        releaseDateValueLabel.isAccessibilityElement = true
+        
         voteCountValueLabel.text = "\(viewModel.formatVoteCount(movie.voteCount ?? 0))"
+        voteCountValueLabel.isAccessibilityElement = true
+        
         genreIdValueLabel.text = "Genre IDs: \(movie.genreIds ?? [0])"
+        genreIdValueLabel.isAccessibilityElement = true
     }
 }

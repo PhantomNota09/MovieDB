@@ -105,6 +105,10 @@ private extension MovieListVC {
         searchBar?.placeholder = "Search movies..."
         searchBar?.translatesAutoresizingMaskIntoConstraints = false
         
+        // Added accessibility for VoiceOver
+        searchBar?.accessibilityLabel = "Search movies"
+        searchBar?.accessibilityHint = "Type to search for a movie by title"
+        
         if let searchBar = searchBar, let pageLabel = pageLabel {
             view.addSubview(searchBar)
             NSLayoutConstraint.activate([
@@ -309,6 +313,9 @@ private extension MovieListVC {
         Task {
                 await cell.moviePosterImageView.loadImage(url: imagePath)
         }
+        
+        // Updating accessibility for VoiceOver
+        cell.updateAccessibility()
     }
 }
 
@@ -318,7 +325,8 @@ private extension MovieListVC {
     
     /// Navigates to the movie detail screen with the selected movie
     func navigateToMovieDetail(with movie: MovieModel) {
-        let detailVC = MovieDetailViewController()
+        //let detailVC = MovieDetailViewController()
+        let detailVC = MovieDetailSwiftUIViewController()
         detailVC.movie = movie
         navigationController?.pushViewController(detailVC, animated: true)
     }

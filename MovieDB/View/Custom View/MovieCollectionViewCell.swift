@@ -33,6 +33,9 @@ class MovieCollectionViewCell: UICollectionViewCell {
         contentView.layer.borderWidth = 1
         contentView.layer.borderColor = UIColor.systemGray5.cgColor
         
+        // Make cell accessible for VoiceOver
+        isAccessibilityElement = true
+        
         // Setup image view
         moviePosterImageView.contentMode = .scaleAspectFit
         moviePosterImageView.tintColor = .systemGray
@@ -96,5 +99,16 @@ class MovieCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // function to update accessibility label when cell data changes
+    func updateAccessibility() {
+        let title = movieTitleLabel.text ?? "Unknown movie"
+        let rating = movieScoreLabel.text ?? "No rating"
+        let year = movieReleaseLabel.text ?? "No year"
+        
+        // Combine all info for VoiceOver
+        accessibilityLabel = "\(title). \(rating). \(year)"
+        accessibilityHint = "Double tap to view details"
     }
 }
